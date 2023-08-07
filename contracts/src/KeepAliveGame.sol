@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 struct GameSettings {
   uint256 timeBetweenTends;
-  uint256 governsPerTend;
+  uint256 tendsPerGovern;
   uint256 balanceThreshold;
   uint256 decayHorizon;
 }
@@ -108,7 +108,7 @@ contract KeepAliveGame is Pausable, Ownable {
     AccountStatus storage account = accountStatusByAddress[_address];
     uint256 totalTends = account.totalFans + account.totalFuels;
     uint256 totalGoverns = account.totalDefends + account.totalAccusations;
-    uint256 earnedGoverns = totalTends / gameSettings.governsPerTend;
+    uint256 earnedGoverns = totalTends / gameSettings.tendsPerGovern;
     return (totalGoverns - earnedGoverns > 0);
   }
 

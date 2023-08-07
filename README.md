@@ -23,10 +23,10 @@ Can your chain burn the brightest? A new slow arcade game for the OP stack super
 - There are also 2 ways you can `govern(act, address)` the flame.
   - `ACCUSE` - It’s quite possible there are traitors among you. You accuse an `address` of acting in bad faith. This will add (+1) to that address’s `blame` score, if it is less than 10.
   - `DEFEND` - It’s also possible that traitors might be making false accusations! You can defend an `address` against accusations. This will subtract (-1) from that address’s `blame` score, if it is greater than 0.
-  - After every `GameSettings.governsPerTend` `tend()` calls, your `abilityToGovern` will increase by 1. Each time you `govern()` your `abilityToGovern` will decrease by 1.
+  - After every `GameSettings.tendsPerGovern` `tend()` calls, your `abilityToGovern` will increase by 1. Each time you `govern()` your `abilityToGovern` will decrease by 1.
 - We will keep track of general game settings in the `GameSettings` struct, that will track:
   - `timeBetweenTends` - the number of blocks that have to happen until your next opportunity to tend
-  - `governsPerTend` - the number of times an account must call `tend()` in order to earn another opportunity to govern.
+  - `tendsPerGovern` - the number of times an account must call `tend()` in order to earn another opportunity to govern.
   - `balanceThreshold` - a number between 0 and 100 that determines the ratio at which a flame will be considered balanced.
   - `decayHorizon` - the number of blocks it takes a flame to extinguish itself, if nobody tends to it.
 - We will keep track of the flame history in a `FlameHistory` struct, that will track:
@@ -58,7 +58,7 @@ Can your chain burn the brightest? A new slow arcade game for the OP stack super
 - The logic for `canGovern(address)` is as follows:
   - `totalTends = AccountStatus.totalFans + AccountStatus.totalFuels`
   - `totalGoverns = AccountStatus.totalDefends + AccountStatus.totalAccuses`
-  - `earnedGoverns = totalTends / GameSettings.governsPerTend`
+  - `earnedGoverns = totalTends / GameSettings.tendsPerGovern`
   - `totalGoverns - earnedGoverns > 0`
 - How to calculate `flameSize()`
   - Get the `latestFlameActivity` by grabbing `flameActivityByBlock(FlameHistory.lastTendedTo)`

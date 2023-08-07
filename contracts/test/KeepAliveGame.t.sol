@@ -10,10 +10,10 @@ contract KeepAliveGameTest is Test {
 
   function setUp() public {
     GameSettings memory settings = GameSettings({
-      timeBetweenTends: 100,
-      governsPerTend: 5,
-      balanceThreshold: 50,
-      decayHorizon: 200
+      timeBetweenTends: 10,
+      tendsPerGovern: 10,
+      balanceThreshold: 20,
+      decayHorizon: 10
     });
     game = new KeepAliveGame(settings);
   }

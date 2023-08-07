@@ -4,6 +4,13 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+struct GameSettings {
+  uint256 timeBetweenTends;
+  uint256 governsPerTend;
+  uint256 balanceThreshold;
+  uint256 decayHorizon;
+}
+
 contract KeepAliveGame is Pausable, Ownable {
   // Definitions
   enum Act {
@@ -13,13 +20,6 @@ contract KeepAliveGame is Pausable, Ownable {
   enum GovernAct {
     ACCUSE,
     DEFEND
-  }
-
-  struct GameSettings {
-    uint256 timeBetweenTends;
-    uint256 governsPerTend;
-    uint256 balanceThreshold;
-    uint256 decayHorizon;
   }
 
   // Additional Definitions

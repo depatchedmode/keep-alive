@@ -3,13 +3,18 @@ pragma solidity 0.8.15;
 
 /* Testing utilities */
 import {Test} from "forge-std/Test.sol";
-import {AttestationStation} from "../src/KeepAliveGame.sol";
+import {KeepAliveGame, GameSettings} from "../src/KeepAliveGame.sol";
 
 contract KeepAliveGameTest is Test {
   KeepAliveGame public game;
 
   function setUp() public {
-    GameSettings memory settings = GameSettings(...);
+    GameSettings memory settings = GameSettings({
+      timeBetweenTends: 100,
+      governsPerTend: 5,
+      balanceThreshold: 50,
+      decayHorizon: 200
+    });
     game = new KeepAliveGame(settings);
   }
 

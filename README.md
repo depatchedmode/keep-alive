@@ -11,15 +11,15 @@ Can your chain burn the brightest? A new slow arcade game for the OP stack super
 ## Draft Game Logic:
 
 - The goal is to keep your chain’s flame burning the brightest, of all the chains.
-  - To grow the flame, you must keep the amount of `activeFuel` and `activeFanning` balanced.
+  - To grow the flame, you must keep the amount of `FlameActivity.fuel` and `FlameActivity.fanning` are balanced in the previous block.
   - When the difference between them is small, they will be considered balanced, and the flame will grow.
   - When the difference between them becomes too great, the flame is out of balance, and it will diminish.
   - It’s possible other chains will attempt to sabotage your flame, so there are also ways to govern who can tend to it.
-- Someone must `light()` the flame if `flameSize()` is 0. This will initialize the flame with +10 to both `currentFuel` and `currentFanning`.
+- Someone must `light()` the flame if `flameSize()` is 0. This will initialize the flame with +10 to both `FlameActivity.fuel` and `FlameActivity.fanning`.
 - There are 2 ways you can `tend(act)` to the flame.
   - An `address` can only `tend()` when `canTend(address)` returns true.
-  - `FAN` - This act adds +1 to the `currentFanning` of the flame.
-  - `FUEL` - This act adds +1 to the `currentFuel` for the flame.
+  - `FAN` - This act adds +1 to the `FlameActivity.fanning` of the flame for that block.
+  - `FUEL` - This act adds +1 to the `FlameActivity.fuel` for the flame for that block.
 - There are also 2 ways you can `govern(act, address)` the flame.
   - `ACCUSE` - It’s quite possible there are traitors among you. You accuse an `address` of acting in bad faith. This will add (+1) to that address’s `blame` score, if it is less than 10.
   - `DEFEND` - It’s also possible that traitors might be making false accusations! You can defend an `address` against accusations. This will subtract (-1) from that address’s `blame` score, if it is greater than 0.
@@ -70,8 +70,7 @@ Can your chain burn the brightest? A new slow arcade game for the OP stack super
   * `stagnantBlocks = block.number - FlameHistory.lastTendedTo`
   * We want to penalize the participants in the chain if nobody has been tending to the flame. So we calculate a flame decay. `flameDecay = provisionalSize / GameSettings.decayHorizon * stagnantBlocks`
   * finally, we return `stagnantBlocks >= GameSettings.decayHorizon ? 0 : provisionalSize - flameDecay`
-
-* Flame size has levels by order of magnitude. There are 7 potential levels.
+- Flame size has levels by order of magnitude. There are 7 potential levels.
   - > 1
   - > 10
   - > 100
@@ -79,7 +78,6 @@ Can your chain burn the brightest? A new slow arcade game for the OP stack super
   - > 10000
   - > 100000
   - > 1000000
-  -
 
 ## Stretch Goals:
 

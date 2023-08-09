@@ -1,6 +1,7 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
+import { KeepAlive } from "./components";
 import { Attestooooooor } from "./components";
 
 export function App() {
@@ -20,8 +21,9 @@ export function App() {
       {isConnected && (
         <>
           <hr />
-          <Attestooooooor />
+          {/* <Attestooooooor /> */}
           <hr />
+          <KeepAlive />
         </>
       )}
     </>

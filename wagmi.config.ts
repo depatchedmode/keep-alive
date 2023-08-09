@@ -3,6 +3,8 @@ import { foundry, react } from "@wagmi/cli/plugins";
 import * as chains from "wagmi/chains";
 import { ATTESTATION_STATION_ADDRESS } from "@eth-optimism/atst";
 
+const KEEPALIVE_ADDRESS = "0x809d550fca64d94Bd9F66E60752A544199cfAC3D";
+
 /**
  * Wagmi cli will automatically generate react hooks from your forge contracts
  * @see https://wagmi.sh/cli/getting-started
@@ -27,10 +29,10 @@ export default defineConfig({
      */
     foundry({
       deployments: {
-        AttestationStation: {
-          [chains.optimism.id]: ATTESTATION_STATION_ADDRESS,
-          [chains.optimismGoerli.id]: ATTESTATION_STATION_ADDRESS,
-          [chains.foundry.id]: ATTESTATION_STATION_ADDRESS,
+        KeepAliveGame: {
+          [chains.optimism.id]: KEEPALIVE_ADDRESS,
+          [chains.optimismGoerli.id]: KEEPALIVE_ADDRESS,
+          [chains.foundry.id]: KEEPALIVE_ADDRESS,
         },
       },
     }),

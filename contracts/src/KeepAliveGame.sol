@@ -5,13 +5,6 @@ import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-struct GameSettings {
-  uint256 timeBetweenTends;
-  uint256 tendsPerGovern;
-  uint256 balanceThreshold;
-  uint256 decayHorizon;
-}
-
 contract KeepAliveGame is Pausable, Ownable {
   // Definitions
   enum Act {
@@ -29,14 +22,21 @@ contract KeepAliveGame is Pausable, Ownable {
     uint256 lastLit;
     uint256 lastExtinguished;
     uint256 lastTendedTo;
+    address lastLitBy;
   }
 
   struct FlameActivity {
-    uint256 tenders;
     uint256 fanning;
     uint256 fuel;
     uint256 accusations;
     uint256 defends;
+  }
+
+  struct GameSettings {
+    uint256 timeBetweenTends;
+    uint256 tendsPerGovern;
+    uint256 balanceThreshold;
+    uint256 decayHorizon;
   }
 
   struct AccountStatus {
@@ -51,16 +51,23 @@ contract KeepAliveGame is Pausable, Ownable {
   }
 
   // State Variables
-  uint256 public currentFuel = 0;
-  uint256 public currentFanning = 0;
   GameSettings public gameSettings;
   FlameHistory public flameHistory;
+  uint256 public currentFanning;
+  uint256 public currentFuel;
+  uint256 public currentTenders;
+  uint256 public currentGovernors;
   mapping(uint256 => FlameActivity) public flameActivityByBlock;
   mapping(address => AccountStatus) public accountStatusByAddress;
 
   // Constructor to initialize game settings
-  constructor(GameSettings memory _gameSettings) {
-    gameSettings = _gameSettings;
+  constructor() {
+    gameSettings = GameSettings({
+      timeBetweenTends: 10,
+      tendsPerGovern: 10,
+      balanceThreshold: 20,
+      decayHorizon: 10
+    });
   }
 
   function pause() public onlyOwner {
@@ -74,34 +81,42 @@ contract KeepAliveGame is Pausable, Ownable {
   // Function to light the flame
   function light() public {
     require(flameSize() == 0, "Flame is already lit");
-    currentFuel += 10;
-    currentFanning += 10;
+    currentFuel = flameActivityByBlock[block.number].fuel += gameSettings
+      .decayHorizon;
+    currentFanning = flameActivityByBlock[block.number].fanning += gameSettings
+      .decayHorizon;
+    currentTenders = 1;
+    currentGovernors = 0;
     flameHistory.firstLit = block.number;
-    flameHistory.lastLit = block.number;
+    flameHistory.lastLit = flameHistory.lastTendedTo = block.number;
+    flameHistory.lastLitBy = _msgSender();
   }
 
   // Function to tend to the flame
   function tend(Act act) public {
     require(canTend(_msgSender()), "Cannot tend at this time");
+    AccountStatus storage tender = accountStatusByAddress[_msgSender()];
     if (act == Act.FAN) {
       currentFanning += 1;
-      accountStatusByAddress[_msgSender()].totalFans += 1;
+      flameActivityByBlock[block.number].fanning += 1;
+      tender.totalFans += 1;
     } else if (act == Act.FUEL) {
       currentFuel += 1;
-      accountStatusByAddress[_msgSender()].totalFuels += 1;
+      flameActivityByBlock[block.number].fuel += 1;
+      tender.totalFuels += 1;
     }
 
-    // Update flame activity and other required logic...
+    if (tender.lastTended < flameHistory.lastLit) currentTenders += 1;
+    tender.lastTended = flameHistory.lastTendedTo = block.number;
   }
 
   // Function to check if an address can tend
   function canTend(address _address) public view returns (bool) {
     AccountStatus storage account = accountStatusByAddress[_address];
-    uint256 delay = 10 + (10 ** account.blame);
+    uint256 delay = 10 + (2 ** account.blame);
     return
       (account.blame < 10) &&
-      (block.number - account.lastTended > delay) &&
-      (flameSize() - flameActivityByBlock[block.number].tenders > 0);
+      (account.lastTended == 0 || block.number - account.lastTended > delay);
   }
 
   // Function to check if an address can govern
@@ -116,45 +131,57 @@ contract KeepAliveGame is Pausable, Ownable {
   // Function to govern the flame
   function govern(GovernAct act, address _address) public {
     require(canGovern(_msgSender()), "Cannot govern at this time");
+    AccountStatus storage governor = accountStatusByAddress[_msgSender()];
     if (act == GovernAct.ACCUSE) {
       if (accountStatusByAddress[_address].blame < 10) {
         accountStatusByAddress[_address].blame += 1;
-        accountStatusByAddress[_msgSender()].totalAccusations += 1;
+        governor.totalAccusations += 1;
       }
     } else if (act == GovernAct.DEFEND) {
       if (accountStatusByAddress[_address].blame > 0) {
         accountStatusByAddress[_address].blame -= 1;
-        accountStatusByAddress[_msgSender()].totalDefends += 1;
+        governor.totalDefends += 1;
       }
     }
-    accountStatusByAddress[_msgSender()].lastGoverned = block.number;
+
+    if (governor.lastGoverned < flameHistory.lastLit) currentTenders += 1;
+    governor.lastGoverned = block.number;
   }
 
   // Function to calculate flame size
   function flameSize() public view returns (uint256) {
-    FlameActivity storage latestFlameActivity = flameActivityByBlock[
-      flameHistory.lastTendedTo
-    ];
-    uint256 flameDecay = flameHistory.lastTendedTo - block.number;
-    uint256 flameBalance = (100 *
-      (latestFlameActivity.fanning - latestFlameActivity.fuel)) /
-      latestFlameActivity.tenders;
-    int256 flameGrowthRatio = flameBalance >
-      uint256(gameSettings.balanceThreshold)
-      ? -1 * int256(flameBalance)
-      : int256(gameSettings.balanceThreshold) - int256(flameBalance);
-    int256 flameChange = (int256(latestFlameActivity.tenders) *
-      flameGrowthRatio) / 100;
-    uint256 provisionalSize = uint256(
-      int256(latestFlameActivity.tenders) + flameChange
-    );
+    // check if it's ever been lit
+    if (flameHistory.firstLit == 0) return 0;
+
+    // check for stagnation
     uint256 stagnantBlocks = block.number - flameHistory.lastTendedTo;
+    if (stagnantBlocks >= gameSettings.decayHorizon) return 0;
+
+    uint256 flameBalance = _flameBalance();
+    bool flameIsBurningClean = flameBalance < gameSettings.balanceThreshold;
+    uint256 flameModifier = flameIsBurningClean
+      ? gameSettings.balanceThreshold - flameBalance
+      : 100 - flameBalance;
+    uint256 totalActs = currentFuel + currentFanning;
+    uint256 maxSize = currentTenders * 2;
+    uint256 baseSize = (totalActs <= maxSize) ? totalActs : maxSize;
+    uint256 provisionalSize = flameIsBurningClean
+      ? (baseSize * flameModifier) / 100 + baseSize
+      : (baseSize * flameModifier) / 100;
     uint256 flameDecayPenalty = (provisionalSize / gameSettings.decayHorizon) *
       stagnantBlocks;
-    return (
-      stagnantBlocks >= gameSettings.decayHorizon
-        ? 0
-        : provisionalSize - flameDecayPenalty
-    );
+    return provisionalSize - flameDecayPenalty;
+  }
+
+  function _flameBalance() private view returns (uint256) {
+    uint256 total = currentFuel + currentFanning;
+    if (total > 0) {
+      uint256 difference = currentFanning > currentFuel
+        ? currentFanning - currentFuel
+        : currentFuel - currentFanning;
+      return (100 * difference) / total;
+    } else {
+      return 0;
+    }
   }
 }

@@ -71,7 +71,7 @@ Can your chain burn the brightest? A new slow arcade game for the OP stack super
   * We want to penalize the participants in the chain if nobody has been tending to the flame. So we calculate a flame decay. `flameDecay = provisionalSize / GameSettings.decayHorizon * stagnantBlocks`
   * finally, we return `stagnantBlocks >= GameSettings.decayHorizon ? 0 : provisionalSize - flameDecay`
 - Flame size has levels by order of magnitude. There are 7 potential levels.
-  - > 1
+  - > = 1
   - > 10
   - > 100
   - > 1000

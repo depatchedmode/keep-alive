@@ -85,7 +85,7 @@ contract KeepAliveGame is Pausable, Ownable {
       .decayHorizon;
     currentFanning = flameActivityByBlock[block.number].fanning += gameSettings
       .decayHorizon;
-    currentTenders = 0;
+    currentTenders = 1;
     currentGovernors = 0;
     flameHistory.firstLit = block.number;
     flameHistory.lastLit = flameHistory.lastTendedTo = block.number;

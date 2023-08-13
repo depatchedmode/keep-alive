@@ -52,10 +52,11 @@
   --flame-base: #F6FAFA;
 }
 
+.container.foundry,
 .container.mode,
 .container.mode-testnet {
   --bg-color: #D1BF81;
-  --bg-color-dark: #C9B46Bi;
+  --bg-color-dark: #C9B46B;
   --text-color-1: #fff;
   --text-color-2: #A48002;
   --stroke-color: #fff;

@@ -85,11 +85,14 @@ contract KeepAliveGame is Pausable, Ownable {
       .decayHorizon;
     currentFanning = flameActivityByBlock[block.number].fanning += gameSettings
       .decayHorizon;
-    currentTenders = 1;
+    currentTenders = 0;
     currentGovernors = 0;
     flameHistory.firstLit = block.number;
     flameHistory.lastLit = flameHistory.lastTendedTo = block.number;
     flameHistory.lastLitBy = _msgSender();
+
+    AccountStatus storage tender = accountStatusByAddress[_msgSender()];
+    tender.lastTended = flameHistory.lastTendedTo = block.number;
   }
 
   // Function to tend to the flame

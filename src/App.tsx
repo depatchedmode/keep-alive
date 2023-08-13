@@ -1,17 +1,16 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import { baseGoerli, foundry, optimismGoerli, zoraTestnet } from "wagmi/chains";
+import { useNetwork } from 'wagmi';
 
 import { KeepAlive } from "./components";
 
 export function App() {
-  /**
-   * Wagmi hook for getting account information
-   * @see https://wagmi.sh/docs/hooks/useAccount
-   */
+  const { chain } = useNetwork();
   const { isConnected } = useAccount();
 
   return (
-    <div className="container">
+    <div className={`container ${ chain.network }`}>
       <header className="accountBar">
         <h1 className="keepAliveTitle">KEEP•ALIVE</h1>
         {/** @see https://www.rainbowkit.com/docs/connect-button */}

@@ -1,7 +1,6 @@
 import { defineConfig } from "@wagmi/cli";
 import { foundry, react } from "@wagmi/cli/plugins";
 import * as chains from "wagmi/chains";
-import { ATTESTATION_STATION_ADDRESS } from "@eth-optimism/atst";
 
 const KEEPALIVE_ADDRESS = "0x809d550fca64d94Bd9F66E60752A544199cfAC3D";
 
@@ -33,6 +32,10 @@ export default defineConfig({
           [chains.optimism.id]: KEEPALIVE_ADDRESS,
           [chains.optimismGoerli.id]: KEEPALIVE_ADDRESS,
           [chains.foundry.id]: KEEPALIVE_ADDRESS,
+          [chains.base.id]: KEEPALIVE_ADDRESS,
+          [chains.baseGoerli.id]: KEEPALIVE_ADDRESS,
+          [chains.zora.id]: KEEPALIVE_ADDRESS,
+          [chains.zoraTestnet.id]: KEEPALIVE_ADDRESS,
         },
       },
     }),

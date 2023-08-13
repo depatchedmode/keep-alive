@@ -16,6 +16,60 @@
   --padding: 40px;
 }
 
+.container.base,
+.container.base-goerli {
+  --bg-color: #9ECFCC;
+  --bg-color-dark: #7BBEB9;
+  --text-color-1: #fff;
+  --text-color-2: #2B84D6;
+  --stroke-color: #fff;
+  --accent-color: #2B84D6;
+  --flame-1: #409FF7;
+  --flame-2: #7EBBF4;
+  --flame-3: #BDDDFB;
+  --flame-4: #A0CEF8;
+  --flame-5: #E1EFFB;
+  --flame-6: #A0CEF8;
+  --flame-7: #F0F6FA;
+  --flame-base: #CBF2F0;
+}
+
+.container.zora,
+.container.zora-testnet {
+  --bg-color: #EEEEEE;
+  --bg-color-dark: #BBBBBB;
+  --text-color-1: #555555;
+  --text-color-2: #333333;
+  --stroke-color: #333333;
+  --accent-color: #333333;
+  --flame-1: #7A91F4;
+  --flame-2: #BEACEC;
+  --flame-3: #D6CAF4;
+  --flame-4: #ECCDEC;
+  --flame-5: #F0DBF0;
+  --flame-6: #FBEEFB;
+  --flame-7: #EBC0EB;
+  --flame-base: #F6FAFA;
+}
+
+.container.mode,
+.container.mode-testnet {
+  --bg-color: #D1BF81;
+  --bg-color-dark: #C9B46Bi;
+  --text-color-1: #fff;
+  --text-color-2: #A48002;
+  --stroke-color: #fff;
+  --accent-color: #A48002;
+  --flame-1: #FFC700;
+  --flame-2: #FFDD66;
+  --flame-3: #FFE999;
+  --flame-4: #FFF4CC;
+  --flame-5: #EFF178;
+  --flame-6: #F9FBA5;
+  --flame-7: #CDFF62;
+  --flame-base: #E6EDDA;
+}
+
 @font-face {
   font-family: 'ApfelGrotezk';
   src: url('/src/fonts/ApfelGrotezk-Fett.woff2') format('woff2'),
@@ -73,7 +127,7 @@ button {
   padding: 16px;
   border: 0px solid transparent;
   background-color: var(--accent-color);
-  color: var(--text-color-1);
+  color: #fff;
   text-transform: uppercase;
 }
 
@@ -93,7 +147,6 @@ select, input {
 }
 
 body, html {
-  background: var(--bg-color);
   color: var(--text-color-2);
   margin: 0;
   min-height: 100vh;
@@ -105,6 +158,7 @@ body, html {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
+  background-color: var(--bg-color);
 }
 
 .keepAliveContainer {
@@ -158,12 +212,28 @@ body, html {
   width: 40px;
   height: 40px;
   border-radius: 40px;
-  background: red;
   border: 8px solid var(--bg-color-dark);
+  background-size: cover;
+}
+
+.networkOrb.optimism {
+  background-image: url(/src/images/OP-logo.png);
+}
+
+.networkOrb.base {
+  background-image: url(/src/images/Base-logo.png);
+}
+
+.networkOrb.mode {
+  background-image: url(/src/images/Mode-logo.png);
+}
+
+.networkOrb.zora {
+  background-image: url(/src/images/Zora-logo.png);
 }
 
 .networkOrbsList .networkOrb.active {
-  border: 8px solid var(--stroke-color);
+  border: 8px solid var(--accent-color);
 }
 
 .networkScore {
@@ -178,10 +248,15 @@ body, html {
   align-items: center;
   justify-content: center;
   gap: var(--padding);
+  padding: var(--padding);
 }
 
 .textColor1 {
   color: var(--text-color-1);
+}
+
+.textColor2 {
+  color: var(--text-color-2);
 }
 
 .flameContainer {
@@ -240,7 +315,8 @@ body, html {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: stretch;
+  align-items: center;
+  gap: 16px;
 }
 
 .balanceMeterChartWrapper {
@@ -273,12 +349,13 @@ body, html {
   height: 40px;
   background-color: var(--stroke-color);
   position: absolute;
-  top: -8px;
-  left: 40%;
+  top: -7px;
+  border-radius: 4px;
+  left: 45%;
 }
 
 .balanceMeterLine::after {
-  left: 60%;
+  left: 55%;
 }
 
 .balanceMeterKnob {

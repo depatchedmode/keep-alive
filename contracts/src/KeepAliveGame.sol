@@ -63,7 +63,7 @@ contract KeepAliveGame is Pausable, Ownable {
   // Constructor to initialize game settings
   constructor() {
     gameSettings = GameSettings({
-      timeBetweenTends: 10,
+      timeBetweenTends: 0,
       tendsPerGovern: 10,
       balanceThreshold: 20,
       decayHorizon: 10
@@ -113,7 +113,7 @@ contract KeepAliveGame is Pausable, Ownable {
   // Function to check if an address can tend
   function canTend(address _address) public view returns (bool) {
     AccountStatus storage account = accountStatusByAddress[_address];
-    uint256 delay = 10 + (2 ** account.blame);
+    uint256 delay = gameSettings.timeBetweenTends + (2 ** account.blame) - 1;
     return
       (account.blame < 10) &&
       (account.lastTended == 0 || block.number - account.lastTended > delay);
@@ -121,11 +121,16 @@ contract KeepAliveGame is Pausable, Ownable {
 
   // Function to check if an address can govern
   function canGovern(address _address) public view returns (bool) {
+    return availableGoverns(_address) > 0;
+  }
+
+  // Function to check if an address can govern
+  function availableGoverns(address _address) public view returns (uint256) {
     AccountStatus storage account = accountStatusByAddress[_address];
     uint256 totalTends = account.totalFans + account.totalFuels;
-    uint256 totalGoverns = account.totalDefends + account.totalAccusations;
+    uint256 usedGoverns = account.totalDefends + account.totalAccusations;
     uint256 earnedGoverns = totalTends / gameSettings.tendsPerGovern;
-    return (totalGoverns - earnedGoverns > 0);
+    return earnedGoverns - usedGoverns;
   }
 
   // Function to govern the flame

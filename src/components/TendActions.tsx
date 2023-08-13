@@ -21,7 +21,7 @@ export function TendActions() {
   const { data, write } = useKeepAliveGameTend(config);
   const { isLoading } = useWaitForTransaction({ hash: data?.hash });
 
-  const blame = accountStatus ? accountStatus[7] : 0;  debugger;
+  const blame = accountStatus ? accountStatus[7] : 0;
 
   return (
     <div className="actionGroup">

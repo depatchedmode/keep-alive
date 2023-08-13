@@ -1,5 +1,5 @@
-import { fetchBlockNumber } from '@wagmi/core';
-import { useState, useEffect } from 'react';
+import { watchBlockNumber } from '@wagmi/core';
+import { useState } from 'react';
 
 /**
  * These react hooks are generated with the wagmi cli via `wagmi generate`
@@ -16,21 +16,22 @@ export function NetworkStatus() {
  * Automatically generated hook to read the attestation
  * @see https://wagmi.sh/react/execute-hooks/useContractRead
  */
-  const { data: flameSize } = useKeepAliveGameFlameSize();
+  const { refetch: refetchFlameSize, data: flameSize } = useKeepAliveGameFlameSize();
+  const { refetch: refetchFlameHistory, data: flameHistory } = useKeepAliveGameFlameHistory();
 
-  const [blockNumber, setBlockNumber] = useState(null);
+  const [flameAge, setFlameAge] = useState(null);
 
-  const { data: flameHistory } = useKeepAliveGameFlameHistory();
-  const lastLit = flameHistory ? flameHistory[1] : 0;
-
-  useEffect(() => {
-    async function fetchData() {
-      const blockNumber = await fetchBlockNumber();
-      setBlockNumber(blockNumber);
-    }
-
-    fetchData();
-  }, []);
+  const unwatch = watchBlockNumber(
+    {
+      listen: true,
+    },
+    (blockNumber) => {
+      const lastLit = flameHistory ? flameHistory[1] : 0;
+      refetchFlameSize();
+      refetchFlameHistory();
+      setFlameAge(blockNumber && lastLit && flameSize > 0 ? (blockNumber-lastLit) : 0)
+    },
+  )
 
   return (
     <div className="networkStatus">
@@ -42,7 +43,7 @@ export function NetworkStatus() {
       </div>
       <h2 className="networkScore">
         <span>Optimism Flame</span>&nbsp;
-        <span className="textColor1">{ blockNumber && lastLit ? (blockNumber-lastLit).toString() : 0 } Blocks • { flameSize?.toString() } Lumens</span>
+        <span className="textColor1">{ flameAge?.toString()} Blocks • { flameSize?.toString() } Lumens</span>
       </h2>
     </div>
   );

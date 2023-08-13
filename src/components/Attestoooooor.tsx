@@ -6,6 +6,8 @@ import {
   encodeRawKey,
 } from "@eth-optimism/atst";
 
+import { FlameStatus } from "./components";
+
 /**
  * These react hooks are generated with the wagmi cli via `wagmi generate`
  * @see ROOT/wagmi.config.ts

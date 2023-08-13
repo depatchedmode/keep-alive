@@ -1,0 +1,233 @@
+:root {
+  --bg-color: #E4A9A9;
+  --bg-color-dark: #DF9A9A;
+  --text-color-1: #fff;
+  --text-color-2: #B82C00;
+  --stroke-color: #fff;
+  --accent-color: #B82C00;
+  --flame-1: #ff4500;
+  --flame-2: #ff7518;
+  --flame-3: #ff8c00;
+  --flame-4: #ffad33;
+  --flame-5: #ffb347;
+  --flame-6: #ffc966;
+  --flame-7: #ffd878;
+  --flame-base: #FDF7F7;
+  --padding: 40px;
+}
+
+@font-face {
+  font-family: 'ApfelGrotezk';
+  src: url('/src/fonts/ApfelGrotezk-Fett.woff2') format('woff2'),
+          url('/src/fonts/ApfelGrotezk-Fett.woff') format('woff');
+  font-weight: 400 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ApfelGrotezk';
+  src: url('/src/fonts/ApfelGrotezk-Regular.woff2') format('woff2'),
+          url('/src/fonts/ApfelGrotezk-Regular.woff') format('woff');
+  font-weight: 100 399;
+  font-style: normal;
+}
+
+body, html {
+  font-family: 'ApfelGrotezk';
+}
+
+h1, h2, h3, h4, h5, h6, button {
+  font-family: 'ApfelGrotezk';
+}
+
+h3 {
+  font-size: 32px;
+  margin: 0;
+  line-height: 100%;
+}
+
+table {
+  border-spacing:0; /* Removes the cell spacing via CSS */
+  border-collapse: collapse;
+  width: 351px;
+  font-weight: 200;
+}
+
+th, td {
+  padding: 12px 16px;
+  border: 1px solid var(--stroke-color);
+  font-weight: 300;
+}
+
+td {
+  width: 80px;
+  text-align: right;
+}
+
+th {
+  text-align: left;
+}
+
+button {
+  width: 100%;
+  font-size: 20px;
+  padding: 16px;
+  border: 0px solid transparent;
+  background-color: var(--accent-color);
+  color: var(--text-color-1);
+  text-transform: uppercase;
+}
+
+.buttonGroup {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+select, input {
+  font-family: 'ApfelGrotezk';
+}
+
+body, html {
+  background: var(--bg-color);
+  color: var(--text-color-2);
+  margin: 0;
+  min-height: 100vh;
+  font-size: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.keepAliveContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.gamePlay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--padding);
+  flex-grow: 1;
+}
+
+.accountBar {
+  position: fixed;
+  top: 0;
+  left: 0; right: 0;
+  padding: var(--padding);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.keepAliveTitle {
+  color: var(--text-color-2);
+  font-size: 64px;
+  line-height: 100%;
+  margin: 0;
+}
+
+.networkStatus {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--padding) / 2) var(--padding);
+  background: var(--bg-color-dark);
+}
+
+.networkOrbsList {
+  display: flex;
+  gap: 8px;
+}
+
+.networkOrb {
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  background: red;
+  border: 8px solid var(--bg-color-dark);
+}
+
+.networkOrbsList .networkOrb.active {
+  border: 8px solid var(--stroke-color);
+}
+
+.networkScore {
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.flameStatus {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--padding);
+}
+
+.textColor1 {
+  color: var(--text-color-1);
+}
+
+.flameContainer {
+  width: 200px;
+  margin-bottom: -50px;
+  z-index: 10;
+}
+
+.flameLayer {
+  fill-opacity: 1;
+  animation: flame-flicker 5s infinite;
+}
+
+.flameBase {
+  height: 30px;
+  width: 200px;
+  border-radius: 50%;
+  background: var(--flame-base);
+}
+
+.flameLayer-1 { fill: var(--flame-1); stroke: var(--flame-1); animation-delay: 0.7s; }
+.flameLayer-2 { fill: var(--flame-2); stroke: var(--flame-2); animation-delay: 1.14s; }
+.flameLayer-3 { fill: var(--flame-3); stroke: var(--flame-3); animation-delay: 0.21s; }
+.flameLayer-4 { fill: var(--flame-4); stroke: var(--flame-4); animation-delay: 0.28s; }
+.flameLayer-5 { fill: var(--flame-5); stroke: var(--flame-5); animation-delay: 0.35s; }
+.flameLayer-6 { fill: var(--flame-6); stroke: var(--flame-6); animation-delay: 0.42s; }
+.flameLayer-7 { fill: var(--flame-7); stroke: var(--flame-7); animation-delay: 0.49s; }
+
+@keyframes wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+@keyframes flame-flicker {
+  0% { transform: translateY(0) translateX(0); }
+  10% { transform: translateY(-2px) translateX(1px); }
+  20% { transform: translateY(1px) translateX(-1px); }
+  30% { transform: translateY(-1px) translateX(1px); }
+  40% { transform: translateY(2px) translateX(-1px); }
+  50% { transform: translateY(-2px) translateX(1px); }
+  60% { transform: translateY(1px) translateX(-1px); }
+  70% { transform: translateY(-1px) translateX(0); }
+  80% { transform: translateY(1px) translateX(1px); }
+  90% { transform: translateY(-1px) translateX(-1px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+
+.actionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

@@ -49,7 +49,6 @@ h3 {
 table {
   border-spacing:0; /* Removes the cell spacing via CSS */
   border-collapse: collapse;
-  width: 351px;
   font-weight: 200;
 }
 
@@ -76,6 +75,10 @@ button {
   background-color: var(--accent-color);
   color: var(--text-color-1);
   text-transform: uppercase;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 .buttonGroup {
@@ -230,4 +233,61 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 351px;
+}
+
+.balanceMeter {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.balanceMeterChartWrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 8px;
+}
+
+.balanceMeterChart {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  position: relative;
+}
+
+.balanceMeterLine {
+  background: var(--stroke-color);
+  width: 100%;
+  height: 4px;
+  flex-grow: 1;
+  border-radius: 4px;
+}
+
+.balanceMeterLine::after,
+.balanceMeterLine::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 40px;
+  background-color: var(--stroke-color);
+  position: absolute;
+  top: -8px;
+  left: 40%;
+}
+
+.balanceMeterLine::after {
+  left: 60%;
+}
+
+.balanceMeterKnob {
+  width: 20px;
+  height: 20px;
+  background: var(--accent-color);
+  position: absolute;
+  border-radius: 50%;
+  left: 50%;
+  margin-left: -10px;
+  z-index: 10;
 }

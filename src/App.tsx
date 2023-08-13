@@ -10,7 +10,7 @@ export function App() {
   const { isConnected } = useAccount();
 
   return (
-    <div className={`container ${ chain.network }`}>
+    <div className={`container ${ chain?.network }`}>
       <header className="accountBar">
         <h1 className="keepAliveTitle">KEEP•ALIVE</h1>
         {/** @see https://www.rainbowkit.com/docs/connect-button */}
